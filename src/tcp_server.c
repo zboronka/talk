@@ -8,8 +8,8 @@
 #include <string.h>
 #include <errno.h>
 
-#define BUFLEN     2048
-#define PORT  2830
+#define BUFLEN 2048
+#define PORT   2830
 #define MAX_PENDING  5
 
 int main() {
@@ -47,7 +47,7 @@ int main() {
 	}
 
 	/* wait for connection, then receive and print text */
-	while(1){
+	while(1) {
 		if ((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
 			perror("accept");
 			exit(1);

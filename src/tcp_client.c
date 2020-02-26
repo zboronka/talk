@@ -9,7 +9,7 @@
 #include <time.h>
 
 #define BUFLEN 2048
-#define PORT 2830
+#define PORT   2830
 
 int main(int argc, char** argv) {
 	int bts[] = {8, 64, 1024};

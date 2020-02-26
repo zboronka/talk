@@ -8,8 +8,8 @@
 #include <string.h>
 #include <time.h>
 
-#define BUFLEN 512
-#define PORT 2830
+#define BUFLEN 2048
+#define PORT   2830
 
 void die(char *s) {
 	perror(s);
@@ -17,12 +17,13 @@ void die(char *s) {
 }
 
 int main(int argc, char **argv) {
+	int bts[] = {8, 64, 1024};
 	struct hostent *hp;
 	struct sockaddr_in si_other;
 	int s, i, slen=sizeof(si_other);
 	char buf[BUFLEN];
 	char message[BUFLEN];
-	char *host;
+	char *host, sep;
 	clock_t send_t, reply_t;
 
 	if(argc>=2) {
@@ -47,23 +48,24 @@ int main(int argc, char **argv) {
 	si_other.sin_port = htons(PORT);
 	bcopy(hp->h_addr, (char*)&si_other.sin_addr, hp->h_length);
 	
-	while(1) {
-		printf("Input : ");
-		fgets(message, BUFLEN, stdin);
+	printf("8B,64B,1024B");
 
-		send_t = clock();
-		if(sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == -1) {
-			die("sendto");
+	for(int i = 0; i < 50; i++) {
+		for(int j = 0; j < 3; j++) {
+			sep = j < 2 ? ',' : '\n';
+			memset(message, 'p', bts[j] * sizeof(char));
+			message[bts[j]] = '\0';
+			send_t = clock();
+			if(sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == -1) {
+				die("sendto");
+			}
+			bzero(buf, BUFLEN);
+			if(recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == -1) {
+				die("recvfrom");
+			}
+			reply_t = clock();
+			printf("%f\n", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC);
+			//printf("%s\n", buf);
 		}
-
-		bzero(buf, BUFLEN);
-
-		if(recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == -1) {
-			die("recvfrom");
-		}
-
-		reply_t = clock();
-		printf("%s\n", buf);
-		printf("%f\n", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC);
 	}
 }

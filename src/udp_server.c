@@ -5,8 +5,8 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-#define BUFLEN  2048
-#define PORT  2830
+#define BUFLEN 2048
+#define PORT   2830
 
 void die(char *s) {
 	perror(s);
@@ -35,7 +35,6 @@ int main() {
 	}
 
 	while(1) {
-		printf("Waiting for data...");
 		fflush(stdout);
 
 		if((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == -1) {

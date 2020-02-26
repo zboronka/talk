@@ -48,4 +48,6 @@ int main() {
 			die("sendto");
 		}
 	}
+
+	close(s);
 }

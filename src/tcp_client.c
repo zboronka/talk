@@ -35,20 +35,17 @@ int main(int argc, char** argv) {
 		exit(1);
 	}
 
-	// translate host name into peer's IP address
 	hp = gethostbyname(host);
 	if(!hp) {
 		fprintf(stderr, "unknown host: %s\n", host);
 		exit(1);
 	}
 
-	// build address data structure
 	bzero((char*)&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	bcopy(hp->h_addr, (char*)&sin.sin_addr, hp->h_length);
 	sin.sin_port = htons(PORT);
 
-	// active open
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		exit(1);
@@ -61,7 +58,6 @@ int main(int argc, char** argv) {
 
 	printf("8B,64B,1024B\n");
 
-	// main loop: get and send lines of text
 	for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 3; j++) {
 			sep = j < 2 ? ',' : '\n';

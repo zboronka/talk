@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 	si_other.sin_port = htons(PORT);
 	bcopy(hp->h_addr, (char*)&si_other.sin_addr, hp->h_length);
 	
-	printf("8B,64B,1024B");
+	printf("8B,64B,1024B\n");
 
 	for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 3; j++) {

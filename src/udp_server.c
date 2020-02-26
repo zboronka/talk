@@ -42,7 +42,6 @@ int main() {
 		}
 
 		printf("Received size %dB packet from %s:%d\n", recv_len, inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-		printf("Data: %s\n", buf);
 
 		if(sendto(s, reply, sizeof(reply), 0, (struct sockaddr *) &si_other, slen) == -1) {
 			die("sendto");

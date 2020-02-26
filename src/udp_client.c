@@ -64,8 +64,7 @@ int main(int argc, char **argv) {
 				die("recvfrom");
 			}
 			reply_t = clock();
-			printf("%f\n", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC);
-			//printf("%s\n", buf);
+			printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
 		}
 	}
 }

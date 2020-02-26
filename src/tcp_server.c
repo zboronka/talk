@@ -16,7 +16,7 @@ int main() {
 	struct sockaddr_in sin;
 	char buf[BUFLEN];
 	int buf_len, addr_len;
-	int s, new_s;
+	int s, new_s, opt = 1;
 	char reply[] = "ACK";
 
 	/* build address data structure */
@@ -30,10 +30,17 @@ int main() {
 		perror("socket");
 		exit(1);
 	}
+
+	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) { 
+		perror("setsockopt"); 
+		exit(1);
+	}
+
 	if((bind(s, (struct sockaddr *)&sin, sizeof(sin))) < 0) {
 		perror("bind");
 		exit(1);
 	}
+
 	if(listen(s, MAX_PENDING) < 0) {
 		perror("listen");
 		exit(1);

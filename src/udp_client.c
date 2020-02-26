@@ -63,6 +63,7 @@ int main(int argc, char **argv) {
 		}
 
 		reply_t = clock();
+		printf("%s\n", buf);
 		printf("%f\n", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC);
 	}
 }

@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 	char buf[BUFLEN];
 	char message[BUFLEN];
 	char *host;
+	clock_t send_t, reply_t;
 
 	if(argc>=2) {
 		host = argv[1];
@@ -50,6 +51,7 @@ int main(int argc, char **argv) {
 		printf("Input : ");
 		fgets(message, BUFLEN, stdin);
 
+		send_t = clock();
 		if(sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == -1) {
 			die("sendto");
 		}
@@ -60,6 +62,7 @@ int main(int argc, char **argv) {
 			die("recvfrom");
 		}
 
-		printf("%s", buf);
+		reply_t = clock();
+		printf("%f\n", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC);
 	}
 }

@@ -8,13 +8,13 @@
 #include <string.h>
 #include <errno.h>
 
-#define SERVER_PORT  2830
+#define BUFLEN     2048
+#define PORT  2830
 #define MAX_PENDING  5
-#define MAX_LINE     2048
 
 int main() {
 	struct sockaddr_in sin;
-	char buf[MAX_LINE];
+	char buf[BUFLEN];
 	int buf_len, addr_len;
 	int s, new_s;
 	char reply[] = "A";
@@ -23,7 +23,7 @@ int main() {
 	bzero((char *)&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
-	sin.sin_port = htons(SERVER_PORT);
+	sin.sin_port = htons(PORT);
 
 	/* setup passive open */
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {

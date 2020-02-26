@@ -8,15 +8,15 @@
 #include <string.h>
 #include <time.h>
 
-#define SERVER_PORT 2830
-#define MAX_LINE 2048
+#define BUFLEN 2048
+#define PORT 2830
 
 int main(int argc, char** argv) {
 	int bts[] = {8, 64, 1024};
 	struct hostent *hp;
 	struct sockaddr_in sin;
 	char *host;
-	char buf[MAX_LINE], rec_buf[MAX_LINE];
+	char buf[BUFLEN], rec_buf[BUFLEN];
 	int s;
 	int len, rec_len;
 	clock_t send_t, reply_t;
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 	bzero((char*)&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	bcopy(hp->h_addr, (char*)&sin.sin_addr, hp->h_length);
-	sin.sin_port = htons(SERVER_PORT);
+	sin.sin_port = htons(PORT);
 
 	// active open
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {

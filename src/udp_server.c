@@ -17,6 +17,7 @@ int main() {
 
 	int s, i, slen=sizeof(si_other), recv_len;
 	char buf[BUFLEN];
+	char reply[] = "ACK";
 
 	if((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
 		die("socket");
@@ -43,7 +44,7 @@ int main() {
 		printf("Received packet from %d %s:%d\n", recv_len, inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
 		printf("Data: %s\n", buf);
 
-		if(sendto(s, buf, recv_len, 0, (struct sockaddr *) &si_other, slen) == -1) {
+		if(sendto(s, reply, sizeof(reply), 0, (struct sockaddr *) &si_other, slen) == -1) {
 			die("sendto");
 		}
 	}

@@ -17,7 +17,7 @@ int main() {
 	char buf[BUFLEN];
 	int buf_len, addr_len;
 	int s, new_s;
-	char reply[] = "A";
+	char reply[] = "ACK";
 
 	/* build address data structure */
 	bzero((char *)&sin, sizeof(sin));

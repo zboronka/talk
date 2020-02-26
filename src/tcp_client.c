@@ -31,14 +31,14 @@ int main(int argc, char** argv) {
 		}
 	}
 	else {
-		fprintf(stderr, "usage: simplex-talk host\n");
+		fprintf(stderr, "usage: tcp_client host\n");
 		exit(1);
 	}
 
 	// translate host name into peer's IP address
 	hp = gethostbyname(host);
 	if(!hp) {
-		fprintf(stderr, "simplex-talk: unknown host: %s\n", host);
+		fprintf(stderr, "unknown host: %s\n", host);
 		exit(1);
 	}
 
@@ -50,11 +50,11 @@ int main(int argc, char** argv) {
 
 	// active open
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("simplex-talk: socket");
+		perror("socket");
 		exit(1);
 	}
 	if(connect(s, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
-		perror("simplex-talk: connect");
+		perror("connect");
 		close(s);
 		exit(1);
 	}

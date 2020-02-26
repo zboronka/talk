@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	if(argc>=2) {
 		host = argv[1];
 	} else {
-		fprintf(stderr, "usage: udp_rtt_c host\n");
+		fprintf(stderr, "usage: udp_client host\n");
 		exit(1);
 	}
 
@@ -60,6 +60,6 @@ int main(int argc, char **argv) {
 			die("recvfrom");
 		}
 
-		printf(buf);
+		printf("%s", buf);
 	}
 }

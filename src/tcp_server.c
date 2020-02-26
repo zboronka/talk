@@ -27,22 +27,22 @@ int main() {
 
 	/* setup passive open */
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("simplex-talk: socket");
+		perror("socket");
 		exit(1);
 	}
 	if((bind(s, (struct sockaddr *)&sin, sizeof(sin))) < 0) {
-		perror("simplex-talk: bind");
+		perror("bind");
 		exit(1);
 	}
 	if(listen(s, MAX_PENDING) < 0) {
-		perror("simplex-talk: listen");
+		perror("listen");
 		exit(1);
 	}
 
 	/* wait for connection, then receive and print text */
 	while(1){
 		if ((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
-			perror("simplex-talk: accept");
+			perror("accept");
 			exit(1);
 		}
 		while (buf_len = recv(new_s, buf, sizeof(buf), 0)) {

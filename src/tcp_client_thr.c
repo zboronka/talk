@@ -8,11 +8,11 @@
 #include <string.h>
 #include <time.h>
 
-#define BUFLEN 2048
+#define BUFLEN 10000000
 #define PORT   2830
 
 int main(int argc, char** argv) {
-	int bts[] = {8, 64, 1024};
+	int bts[] = {1, 16, 64, 256, 1000};
 	struct hostent *hp;
 	struct sockaddr_in sin;
 	char *host;
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 	if(argc>=2) {
 		host = argv[1];
 	} else {
-		fprintf(stderr, "usage: tcp_client host\n");
+		fprintf(stderr, "usage: tcp_client_thr host\n");
 		exit(1);
 	}
 
@@ -50,13 +50,13 @@ int main(int argc, char** argv) {
 		exit(1);
 	}
 
-	printf("8B,64B,1024B\n");
+	printf("1K,16K,64K,256K,1M\n");
 
 	for(int i = 0; i < 50; i++) {
-		for(int j = 0; j < 3; j++) {
+		for(int j = 0; j < 5; j++) {
 			sep = j < 2 ? ',' : '\n';
-			memset(buf, 'p', bts[j] * sizeof(char));
-			buf[bts[j]] = '\0';
+			memset(buf, 'p', bts[j] * 1000 * sizeof(char));
+			buf[bts[j*1000]] = '\0';
 			len = strlen(buf);
 			send_t = clock();
 			send(s, buf, len, 0);

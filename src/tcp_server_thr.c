@@ -48,11 +48,11 @@ int main() {
 
 	/* wait for connection, then receive and print text */
 	while(1) {
-		if ((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
+		if((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
 			perror("accept");
 			exit(1);
 		}
-		while (buf_len = recv(new_s, buf, sizeof(buf), 0)) {
+		while(buf_len = recv(new_s, buf, BUFLEN * sizeof(char), 0)) {
 			printf("Received %dB\n", buf_len);
 			send(new_s, reply, sizeof(reply), MSG_NOSIGNAL);
 		}

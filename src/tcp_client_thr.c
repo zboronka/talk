@@ -52,13 +52,8 @@ int main(int argc, char** argv) {
 	}
 
 	printf("1K,16K,64K,256K,1M\n");
-	memset(buf, 'p', 10000 * sizeof(char));
-	buf[16000] = '\0';
-	len = strlen(buf);
-	send(s,buf,len,0);
 
-	/*
-	for(int i = 0; i < 50; i++) {
+	//for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 5; j++) {
 			sep = j < 2 ? ',' : '\n';
 			memset(buf, 'p', bts[j] * 1000 * sizeof(char));
@@ -66,13 +61,12 @@ int main(int argc, char** argv) {
 			len = strlen(buf);
 			send_t = clock();
 			send(s, buf, len, 0);
-			if(rec_len = recv(s, rec_buf, sizeof(rec_buf), 0)) {
+			if(rec_len = recv(s, rec_buf, BUFLEN * sizeof(char), 0)) {
 				reply_t = clock();
 				printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
 			}
 		}
-	}
-	*/
+	//}
 
 	free(buf);
 	free(rec_buf);

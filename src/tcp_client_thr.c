@@ -16,7 +16,8 @@ int main(int argc, char** argv) {
 	struct hostent *hp;
 	struct sockaddr_in sin;
 	char *host;
-	char buf[BUFLEN], rec_buf[BUFLEN];
+	char *buf = malloc(BUFLEN * sizeof(char));
+	char *rec_buf = malloc(BUFLEN * sizeof(char));
 	int s;
 	int len, rec_len;
 	clock_t send_t, reply_t;
@@ -51,7 +52,12 @@ int main(int argc, char** argv) {
 	}
 
 	printf("1K,16K,64K,256K,1M\n");
+	memset(buf, 'p', 10000 * sizeof(char));
+	buf[16000] = '\0';
+	len = strlen(buf);
+	send(s,buf,len,0);
 
+	/*
 	for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 5; j++) {
 			sep = j < 2 ? ',' : '\n';
@@ -66,4 +72,8 @@ int main(int argc, char** argv) {
 			}
 		}
 	}
+	*/
+
+	free(buf);
+	free(rec_buf);
 }

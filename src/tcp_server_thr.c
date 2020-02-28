@@ -8,7 +8,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define BUFLEN 2048
+#define BUFLEN 1000000
 #define PORT   2830
 #define MAX_PENDING  5
 

@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-#define BUFLEN 10000000
+#define BUFLEN 10000256
 #define PORT   2830
 
 int main(int argc, char** argv) {
@@ -19,15 +19,15 @@ int main(int argc, char** argv) {
 	char *buf = malloc(BUFLEN * sizeof(char));
 	char *rec_buf = malloc(BUFLEN * sizeof(char));
 	int s;
-	int len, rec_len;
+	int rec_len;
+	int offset = 0;
 	clock_t send_t, reply_t;
 	char sep;
 
 	if(argc>=2) {
 		host = argv[1];
 	} else {
-		fprintf(stderr, "usage: tcp_client_thr host\n");
-		exit(1);
+		host = "localhost";
 	}
 
 	hp = gethostbyname(host);
@@ -53,20 +53,35 @@ int main(int argc, char** argv) {
 
 	printf("1K,16K,64K,256K,1M\n");
 
-	//for(int i = 0; i < 50; i++) {
+	for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 5; j++) {
-			sep = j < 2 ? ',' : '\n';
+			sep = j < 4 ? ',' : '\n';
 			memset(buf, 'p', bts[j] * 1000 * sizeof(char));
-			buf[bts[j*1000]] = '\0';
-			len = strlen(buf);
+			strcpy(buf+((bts[j] * 1000)-4), "\r\n\r\n");
 			send_t = clock();
-			send(s, buf, len, 0);
-			if(rec_len = recv(s, rec_buf, BUFLEN * sizeof(char), 0)) {
-				reply_t = clock();
-				printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
+			if(send(s, buf, strlen(buf), 0) < 0) {
+				perror("send");
+				close(s);
+				exit(1);
 			}
+			while(rec_len = recv(s, rec_buf+offset, (BUFLEN-offset) * sizeof(char), 0) &&
+			      !strstr(rec_buf, "\r\n\r\n")) {
+				if(rec_len < 0) {
+					perror("recv");
+					break;
+				}
+				offset+=rec_len;
+			}
+
+			reply_t = clock();
+			printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
+
+			offset=0;
+			bzero(rec_buf, BUFLEN * sizeof(char));
 		}
-	//}
+	}
+
+	shutdown(s, SHUT_RDWR);
 
 	free(buf);
 	free(rec_buf);

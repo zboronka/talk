@@ -19,13 +19,11 @@ int main() {
 	int s, new_s, opt = 1;
 	char reply[] = "ACK";
 
-	/* build address data structure */
 	bzero((char *)&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port = htons(PORT);
 
-	/* setup passive open */
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		exit(1);
@@ -46,13 +44,16 @@ int main() {
 		exit(1);
 	}
 
-	/* wait for connection, then receive and print text */
 	while(1) {
 		if ((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
 			perror("accept");
 			exit(1);
 		}
 		while (buf_len = recv(new_s, buf, sizeof(buf), 0)) {
+			if(buf_len < 0) {
+				perror("recv");
+				break;
+			}
 			printf("Received %dB\n", buf_len);
 			send(new_s, reply, sizeof(reply), MSG_NOSIGNAL);
 		}

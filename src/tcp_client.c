@@ -18,15 +18,14 @@ int main(int argc, char** argv) {
 	char *host;
 	char buf[BUFLEN], rec_buf[BUFLEN];
 	int s;
-	int len, rec_len;
+	int rec_len;
 	clock_t send_t, reply_t;
 	char sep;
 
 	if(argc>=2) {
 		host = argv[1];
 	} else {
-		fprintf(stderr, "usage: tcp_client host\n");
-		exit(1);
+		host = "localhost";
 	}
 
 	hp = gethostbyname(host);
@@ -57,13 +56,14 @@ int main(int argc, char** argv) {
 			sep = j < 2 ? ',' : '\n';
 			memset(buf, 'p', bts[j] * sizeof(char));
 			buf[bts[j]] = '\0';
-			len = strlen(buf);
 			send_t = clock();
-			send(s, buf, len, 0);
+			send(s, buf, strlen(buf), 0);
 			if(rec_len = recv(s, rec_buf, sizeof(rec_buf), 0)) {
 				reply_t = clock();
 				printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
 			}
 		}
 	}
+
+	shutdown(s, SHUT_RDWR);
 }

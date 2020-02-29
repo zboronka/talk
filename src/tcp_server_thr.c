@@ -8,7 +8,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define BUFLEN 1000000
+#define BUFLEN 1000256
 #define PORT   2830
 #define MAX_PENDING  5
 
@@ -17,15 +17,13 @@ int main() {
 	char *buf = malloc(BUFLEN * sizeof(char));
 	int buf_len, addr_len;
 	int s, new_s, opt = 1;
-	char reply[] = "ACK";
+	int offset = 0;
 
-	/* build address data structure */
 	bzero((char *)&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port = htons(PORT);
 
-	/* setup passive open */
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		exit(1);
@@ -46,15 +44,26 @@ int main() {
 		exit(1);
 	}
 
-	/* wait for connection, then receive and print text */
 	while(1) {
 		if((new_s = accept(s, (struct sockaddr *)&sin, &addr_len)) < 0) {
 			perror("accept");
 			exit(1);
 		}
-		while(buf_len = recv(new_s, buf, BUFLEN * sizeof(char), 0)) {
-			printf("Received %dB\n", buf_len);
-			send(new_s, reply, sizeof(reply), MSG_NOSIGNAL);
+		while(buf_len = recv(new_s, buf+offset, (BUFLEN-offset) * sizeof(char), 0)) {
+			if(!strstr(buf, "\r\n\r\n")) {
+				if(buf_len < 0) {
+					perror("recv");
+					break;
+				}
+				printf("Received %dB\n", buf_len);
+				offset+=buf_len;
+				continue;
+			}
+
+			printf("Total %dB\n", strlen(buf));
+			send(new_s, buf, strlen(buf), MSG_NOSIGNAL);
+			offset=0;
+			bzero(buf, BUFLEN * sizeof(char));
 		}
 		close(new_s);
 	}

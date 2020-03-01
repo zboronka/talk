@@ -42,10 +42,8 @@ int main() {
 			die("recvfrom");
 		}
 
-		total_rec+=recv_len;
+		total_rec += recv_len;
 
-		//printf("Received size %dB packet from %s:%d\n", recv_len, inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-		
 		if(total_rec == 1024*1024) {
 			if(sendto(s, reply, sizeof(reply), 0, (struct sockaddr *) &si_other, slen) == -1) {
 				die("sendto");
@@ -56,6 +54,7 @@ int main() {
 		if(strstr(buf, "drop")) {
 			printf("Dropped packets with %dB receieved\n", total_rec);
 			total_rec = 0;
+			bzero(buf, BUFLEN * sizeof(char));
 		}
 	}
 }

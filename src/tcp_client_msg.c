@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 
 	printf("1024B,512B,256B\n");
 
-	//for(int i = 0; i < 50; i++) {
+	for(int i = 0; i < 50; i++) {
 		for(int j = 0; j < 3; j++) {
 			sep = j < 2 ? ',' : '\n';
 			memset(buf, 'p', bts[j] * sizeof(char));
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 
 			bzero(buf, BUFLEN * sizeof(char));
 		}
-	//}
+	}
 
 	shutdown(s, SHUT_RDWR);
 }

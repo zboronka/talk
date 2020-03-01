@@ -57,13 +57,12 @@ int main() {
 				}
 				printf("Received %dB\n", buf_len);
 				offset+=buf_len;
-				continue;
+			} else {
+				printf("Total %dB\n", strlen(buf));
+				send(new_s, buf, strlen(buf), MSG_NOSIGNAL);
+				offset=0;
+				bzero(buf, BUFLEN * sizeof(char));
 			}
-
-			printf("Total %dB\n", strlen(buf));
-			send(new_s, buf, strlen(buf), MSG_NOSIGNAL);
-			offset=0;
-			bzero(buf, BUFLEN * sizeof(char));
 		}
 		close(new_s);
 	}

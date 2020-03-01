@@ -8,7 +8,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define BUFLEN 1000256
+#define BUFLEN 10000
 #define PORT   2830
 #define MAX_PENDING  5
 
@@ -29,11 +29,6 @@ int main() {
 		exit(1);
 	}
 
-	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) { 
-		perror("setsockopt"); 
-		exit(1);
-	}
-
 	if((bind(s, (struct sockaddr *)&sin, sizeof(sin))) < 0) {
 		perror("bind");
 		exit(1);
@@ -49,21 +44,16 @@ int main() {
 			perror("accept");
 			exit(1);
 		}
-		while(buf_len = recv(new_s, buf+offset, (BUFLEN-offset) * sizeof(char), 0)) {
+		while(buf_len = recv(new_s, buf, BUFLEN * sizeof(char), 0)) {
 			if(!strstr(buf, "\r\n\r\n")) {
 				if(buf_len < 0) {
 					perror("recv");
 					break;
 				}
-				//printf("Received %dB\n", buf_len);
-				offset+=buf_len;
-				continue;
+			} else {
+				send(new_s, "ACKNWLGE", 8, MSG_NOSIGNAL);
+				bzero(buf, BUFLEN * sizeof(char));
 			}
-
-			printf("Total %dB\n", strlen(buf));
-			send(new_s, "ACKNWLGE", 8, MSG_NOSIGNAL);
-			offset=0;
-			bzero(buf, BUFLEN * sizeof(char));
 		}
 		close(new_s);
 	}

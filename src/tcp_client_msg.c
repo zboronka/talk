@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-#define BUFLEN 1040
+#define BUFLEN 10000
 #define PORT   2830
 
 int main(int argc, char** argv) {
@@ -17,9 +17,10 @@ int main(int argc, char** argv) {
 	struct hostent *hp;
 	struct sockaddr_in sin;
 	char *host;
-	char buf[BUFLEN];
+	char *buf = malloc(BUFLEN * sizeof(char));
 	char rec_buf[16];
 	int s;
+	int snd_len = 1024; 
 	int rec_len;
 	clock_t send_t, reply_t;
 	char sep;
@@ -45,18 +46,17 @@ int main(int argc, char** argv) {
 		perror("socket");
 		exit(1);
 	}
+
 	if(connect(s, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
 		perror("connect");
 		close(s);
 		exit(1);
 	}
 
-
 	printf("1024B,512B,256B\n");
 
 	//for(int i = 0; i < 50; i++) {
-		//for(int j = 0; j < 3; j++) {
-		for(int j = 0; j < 1; j++) {
+		for(int j = 0; j < 3; j++) {
 			sep = j < 2 ? ',' : '\n';
 			memset(buf, 'p', bts[j] * sizeof(char));
 			send_t = clock();
@@ -81,6 +81,8 @@ int main(int argc, char** argv) {
 				reply_t = clock();
 				printf("%f%c", ((double) (reply_t - send_t)) / CLOCKS_PER_SEC, sep);
 			}
+
+			bzero(buf, BUFLEN * sizeof(char));
 		}
 	//}
 
